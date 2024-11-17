@@ -7,7 +7,9 @@ interface GlobalState {
   connectedClients: number;
 }
 
-const WS_URL = 'ws://169.197.86.231:8080';
+const WS_URL = import.meta.env.PROD 
+  ? 'wss://api.brainterminal.live'  // Production URL using secure WebSocket
+  : 'ws://localhost:8080';          // Development URL
 
 export const useWebSocket = () => {
   const [globalState, setGlobalState] = useState<GlobalState>({
