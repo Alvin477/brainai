@@ -24,7 +24,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
   }, [globalState.age]);
 
   const handleCopyCA = () => {
-    navigator.clipboard.writeText('iu9aBBpg3VMR4RgyjT3WG2hnojbsJaKd2zVSQwGjCZJ');
+    navigator.clipboard.writeText('3an8rhdepsLCya22af7qDBKPbdomw8K4iCHXaA2Gpump');
     setCopySuccess(true);
     setShowBinaryRain(true);
     setTimeout(() => {
@@ -93,7 +93,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
             }}
             title="Click to copy"
           >
-            {formatCA('iu9aBBpg3VMR4RgyjT3WG2hnojbsJaKd2zVSQwGjCZJ')}
+            {formatCA('3an8rhdepsLCya22af7qDBKPbdomw8K4iCHXaA2Gpump')}
             {copySuccess && (
               <span style={{
                 position: 'absolute',
