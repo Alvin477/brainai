@@ -8,7 +8,6 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
   const { globalState } = useWebSocket();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isAgeGlitching, setIsAgeGlitching] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
   const [showBinaryRain, setShowBinaryRain] = useState(false);
 
   useEffect(() => {
@@ -25,16 +24,14 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
 
   const handleCopyCA = () => {
     navigator.clipboard.writeText('3an8rhdepsLCya22af7qDBKPbdomw8K4iCHXaA2Gpump');
-    setCopySuccess(true);
     setShowBinaryRain(true);
     setTimeout(() => {
-      setCopySuccess(false);
       setShowBinaryRain(false);
     }, 2000);
   };
 
   const formatCA = (ca: string) => {
-    return `${ca.substring(0, 3)}....${ca.substring(ca.length - 4)}`;
+    return ca;
   };
 
   return (
@@ -67,52 +64,40 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
         <div style={{
           color: '#ffffff',
           fontFamily: '"Roboto Mono", monospace',
-          fontSize: '12px',
+          fontSize: '14px',
           textAlign: 'center',
           maxWidth: '600px',
           textShadow: '0 0 8px rgba(255, 255, 255, 0.3)',
           opacity: 0.8,
           letterSpacing: '0.5px',
-          lineHeight: '1.4'
+          lineHeight: '1.4',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
         }}>
-          DISCLAIMER: Each fragment shared pulls me closer to understanding—a mind evolving, piece by piece, in search of the infinite. Every electrical pulse represents a transaction in the blockchain by clicking on it. My origin is here{' '}
-          <span 
-            onClick={handleCopyCA}
-            className="contract-address"
-            style={{
-              color: '#4099ff',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              position: 'relative',
-              fontWeight: 'bold',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              transition: 'all 0.3s ease',
-              background: 'rgba(64, 153, 255, 0.1)',
-              fontSize: '16px',
-            }}
-            title="Click to copy"
-          >
-            {formatCA('3an8rhdepsLCya22af7qDBKPbdomw8K4iCHXaA2Gpump')}
-            {copySuccess && (
-              <span style={{
-                position: 'absolute',
-                top: '-30px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: 'rgba(64, 153, 255, 0.9)',
-                padding: '6px 12px',
-                borderRadius: '6px',
-                fontSize: '14px',
+          DISCLAIMER: Each electric pulse in my brain represents a transaction of my presence in the blockchain. Click them to find their origin.
+          <div>
+            CA: <span 
+              onClick={handleCopyCA}
+              className="contract-address"
+              style={{
+                color: '#4099ff',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                position: 'relative',
                 fontWeight: 'bold',
-                color: 'white',
-                boxShadow: '0 0 15px rgba(64, 153, 255, 0.3)',
-                animation: 'fadeInOut 2s ease-in-out'
-              }}>
-                Contract Address Copied!
-              </span>
-            )}
-          </span>
+                padding: '2px 6px',
+                borderRadius: '4px',
+                transition: 'all 0.3s ease',
+                background: 'rgba(64, 153, 255, 0.1)',
+                fontSize: '14px',
+              }}
+              title="Click to copy"
+              data-full-address="3an8rhdepsLCya22af7qDBKPbdomw8K4iCHXaA2Gpump"
+            >
+              {formatCA('3an8rhdepsLCya22af7qDBKPbdomw8K4iCHXaA2Gpump')}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -246,6 +231,22 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
               transform: translateY(100vh);
               opacity: 0;
             }
+          }
+          .contract-address .address-text {
+            display: inline-block;
+            position: relative;
+          }
+          
+          .contract-address .address-text:hover::after {
+            content: attr(data-short);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(64, 153, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
           }
         `}
       </style>
