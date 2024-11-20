@@ -5,7 +5,7 @@ import { Tubes } from './brain-tubes.tsx';
 import { BrainParticles } from './brain-particles.tsx';
 import { data } from './data';
 import { AgeSimulation } from './AgeSimulation';
-import { useState, useEffect } from 'react';
+import {  useEffect, useRef } from 'react';
 import { SpaceBackground } from './SpaceBackground';
 import { useWebSocket } from './hooks/useWebSocket';
 
@@ -28,13 +28,16 @@ function createBrainCurvesFromPaths(): THREE.CatmullRomCurve3[] {
 const curves = createBrainCurvesFromPaths();
 
 function App() {
-  const [tokenValue, setTokenValue] = useState(0);
   const { globalState } = useWebSocket();
+  const prevTokenValueRef = useRef(0);
 
   useEffect(() => {
     const newValue = globalState.age * 5000;
-    if (Math.abs(newValue - tokenValue) > 500) {
-      setTokenValue(newValue);
+    const prevValue = prevTokenValueRef.current;
+
+    if (newValue - prevValue >= 5000) {
+      console.log('Token value increased by $5000');
+      prevTokenValueRef.current = newValue;
     }
   }, [globalState.age]);
 
