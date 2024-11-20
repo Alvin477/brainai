@@ -27,7 +27,7 @@ export const BrainParticleMaterial = shaderMaterial(
       vOpacity = opacity;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = randoms * 15.0 * (1. / -mvPosition.z) * (1.0 + sin(time * 10.0 + randoms * 10.0) * 0.3);
+      gl_PointSize = (4.0 + randoms * 2.0) * (1. / -mvPosition.z);
     }
   `,
   // fragment shader
@@ -39,18 +39,15 @@ export const BrainParticleMaterial = shaderMaterial(
     void main() {
       float disc = length(gl_PointCoord.xy - vec2(0.5));
       
-      float flicker = sin(time * 12.0 + vRandom * 20.0) * 0.2 + 0.8;
-      float sparkle = sin(time * 20.0 + vRandom * 30.0) * 0.15 + 0.85;
+      float opacity = vOpacity * smoothstep(0.5, 0.1, disc) * 3.0;
       
-      float opacity = vOpacity * smoothstep(0.5, 0.35, disc) * flicker * sparkle * 1.5;
-      
-      vec3 color = mix(
-        vec3(0.7, 0.9, 1.0),  // Very bright blue
-        vec3(0.3, 0.7, 1.0),  // Bright medium blue
-        sin(time * 5.0 + vRandom * 10.0) * 0.5 + 0.5
+      vec3 baseColor = mix(
+        vec3(0.5, 0.7, 1.0),  // Very bright blue
+        vec3(0.4, 0.6, 0.98), // Bright medium blue
+        vRandom
       );
       
-      gl_FragColor = vec4(color, opacity);
+      gl_FragColor = vec4(baseColor, opacity);
     }
   `,
 );
@@ -84,11 +81,14 @@ export function BrainParticles(props: { curves: THREE.CatmullRomCurve3[] }) {
 
   useEffect(() => {
     if (globalState.transaction && typeof globalState.transaction === 'string') {
+      const randomCurve = curves[Math.floor(Math.random() * curves.length)];
+      const randomStartPosition = Math.random();
+      
       setParticles(prev => [...prev, {
         id: globalState.transaction as string,
-        curve: curves[Math.floor(Math.random() * curves.length)],
-        position: 0,
-        speed: 0.003 + Math.random() * 0.004,
+        curve: randomCurve,
+        position: randomStartPosition,
+        speed: 0.002 + Math.random() * 0.003,
         startTime: Date.now(),
         opacity: 0
       }]);
@@ -225,19 +225,15 @@ export function BrainParticles(props: { curves: THREE.CatmullRomCurve3[] }) {
     setParticles(currentParticles => {
       return currentParticles.map(particle => {
         const age = now - particle.startTime;
-        const fadeInDuration = 1000; // 1 second fade in
-        const fadeOutStart = PARTICLE_LIFETIME - 1000; // 1 second fade out
+        const fadeInDuration = 1500;
+        const fadeOutStart = PARTICLE_LIFETIME - 1500;
 
-        // Calculate opacity based on age
         let opacity = particle.opacity;
         if (age < fadeInDuration) {
-          // Fade in
-          opacity = age / fadeInDuration;
+          opacity = Math.pow(age / fadeInDuration, 2);
         } else if (age > fadeOutStart) {
-          // Fade out
-          opacity = 1 - (age - fadeOutStart) / (PARTICLE_LIFETIME - fadeOutStart);
+          opacity = Math.pow(1 - (age - fadeOutStart) / (PARTICLE_LIFETIME - fadeOutStart), 2);
         } else {
-          // Full opacity
           opacity = 1;
         }
 
@@ -330,6 +326,7 @@ export function BrainParticles(props: { curves: THREE.CatmullRomCurve3[] }) {
           depthWrite={false}
           transparent={true}
           blending={THREE.AdditiveBlending}
+          opacity={3.0}
         />
       </points>
       {tooltipInfo && tooltipInfo.show && (

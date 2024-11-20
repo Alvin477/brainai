@@ -9,7 +9,7 @@ interface GlobalState {
 
 const WS_URL = import.meta.env.PROD 
   ? 'wss://api.brainterminal.live'  // Production URL using secure WebSocket
-  : 'ws://localhost:8080';          // Development URL
+  : 'wss://api.brainterminal.live';          // Development URL
 
 export const useWebSocket = () => {
   const [globalState, setGlobalState] = useState<GlobalState>({

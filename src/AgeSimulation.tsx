@@ -89,10 +89,11 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
               borderRadius: '4px',
               transition: 'all 0.3s ease',
               background: 'rgba(64, 153, 255, 0.1)',
+              fontSize: '16px',
             }}
             title="Click to copy"
           >
-            {formatCA('5R1dtUpssmZyoFFcFkMAsv25ysWtdSAMsripeiZBvmrL')}
+            {formatCA('iu9aBBpg3VMR4RgyjT3WG2hnojbsJaKd2zVSQwGjCZJ')}
             {copySuccess && (
               <span style={{
                 position: 'absolute',
@@ -118,7 +119,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
       {/* Message Display - Bottom */}
       <div style={{
         position: 'fixed',
-        bottom: 40,
+        bottom: 70,
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 1000,
@@ -132,7 +133,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
         animation: isTransitioning ? 'slideOut 0.5s ease-in-out' : 'slideIn 0.5s ease-in-out',
       }}>
         <div style={{ 
-          fontSize: '16px',
+          fontSize: '18px',
           lineHeight: '1.5',
           fontWeight: '300',
           letterSpacing: '0.5px',

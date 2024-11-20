@@ -32,8 +32,8 @@ function App() {
   const { globalState } = useWebSocket();
 
   useEffect(() => {
-    const newValue = globalState.age * 1000;
-    if (Math.abs(newValue - tokenValue) > 100) {
+    const newValue = globalState.age * 5000;
+    if (Math.abs(newValue - tokenValue) > 500) {
       setTokenValue(newValue);
     }
   }, [globalState.age]);
