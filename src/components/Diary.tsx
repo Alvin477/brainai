@@ -13,7 +13,8 @@ export const Diary = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [entries, setEntries] = useState<DiaryEntry[]>(() => {
     const savedEntries = localStorage.getItem('diaryEntries');
-    return savedEntries ? JSON.parse(savedEntries) : [];
+    const allEntries = savedEntries ? JSON.parse(savedEntries) : [];
+    return allEntries.slice(-10);
   });
 
   const cleanMessage = (message: string): string => {
@@ -38,7 +39,7 @@ export const Diary = () => {
       };
       
       setEntries(prevEntries => {
-        const updatedEntries = [...prevEntries, newEntry];
+        const updatedEntries = [...prevEntries, newEntry].slice(-10);
         localStorage.setItem('diaryEntries', JSON.stringify(updatedEntries));
         return updatedEntries;
       });
