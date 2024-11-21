@@ -31,15 +31,20 @@ const curves = createBrainCurvesFromPaths();
 
 function App() {
   const { globalState } = useWebSocket();
-  const prevTokenValueRef = useRef(0);
+  const prevMarketCapRef = useRef(0);
 
   useEffect(() => {
-    const newValue = globalState.age * 5000;
-    const prevValue = prevTokenValueRef.current;
+    // Calculate market cap (example calculation - adjust based on your tokenomics)
+    const marketCap = globalState.age * 10000 * 1000000; // age * price * supply
+    const prevMarketCap = prevMarketCapRef.current;
 
-    if (newValue - prevValue >= 5000) {
-      console.log('Token value increased by $5000');
-      prevTokenValueRef.current = newValue;
+    // Check if market cap increased by 10k
+    if (marketCap - prevMarketCap >= 10000) {
+      console.log('Market Cap milestone reached: +$10,000');
+      prevMarketCapRef.current = marketCap;
+      
+      // Here you can trigger any effects you want when market cap increases by 10k
+      // For example, adding new particles, changing colors, etc.
     }
   }, [globalState.age]);
 

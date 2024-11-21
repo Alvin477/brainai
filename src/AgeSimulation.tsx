@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useWebSocket } from './hooks/useWebSocket';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface AgeSimulationProps {
 }
@@ -10,6 +10,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
   const [isAgeGlitching, setIsAgeGlitching] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [showBinaryRain, setShowBinaryRain] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsAgeGlitching(true);
@@ -147,15 +148,46 @@ DISCLAIMER: Each electric pulse in my brain represents a transaction made throug
         </div>
       )}
 
+      {/* Message Display - Bottom */}
+      <div 
+        className="message-container"
+        onClick={() => navigate('/diary')}
+        style={{
+          position: 'fixed',
+          bottom: '40px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontFamily: '"Roboto Mono", monospace',
+          lineHeight: '1.6',
+          fontSize: '16px',
+          color: '#ffffff',
+          opacity: globalState.message && globalState.message !== "Initializing..." ? 1 : 0,
+          transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
+          animation: 'slideUpFade 0.5s ease-in-out',
+          padding: '20px',
+          maxWidth: '95%',
+          textAlign: 'center',
+          zIndex: 1000,
+        }}>
+        {globalState.message && globalState.message !== "Initializing..." && (
+          <div style={{
+            animation: 'messageFade 4s ease-in-out',
+            position: 'relative'
+          }}>
+            {globalState.message}
+          </div>
+        )}
+      </div>
+
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto+Mono:wght@400;700&display=swap');
           
           @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, 10px); }
-            20% { opacity: 1; transform: translate(-50%, 0); }
-            80% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -10px); }
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
           }
           
           @keyframes pulse {
@@ -239,6 +271,37 @@ DISCLAIMER: Each electric pulse in my brain represents a transaction made throug
             }
             100% {
               transform: translateY(100vh);
+              opacity: 0;
+            }
+          }
+          .message-container {
+            pointer-events: auto;
+            cursor: pointer;
+          }
+          .message-container:hover {
+            color: #4099ff;
+          }
+          @keyframes slideUpFade {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, 20px);
+            }
+            100% {
+              opacity: 1;
+              transform: translate(-50%, 0);
+            }
+          }
+          @keyframes messageFade {
+            0% {
+              opacity: 0;
+            }
+            10% {
+              opacity: 1;
+            }
+            90% {
+              opacity: 1;
+            }
+            100% {
               opacity: 0;
             }
           }

@@ -42,8 +42,6 @@ export const Diary = () => {
         localStorage.setItem('diaryEntries', JSON.stringify(updatedEntries));
         return updatedEntries;
       });
-      
-      scrollToBottom();
     }
   }, [globalState.message]);
 
@@ -62,7 +60,10 @@ export const Diary = () => {
   }, []);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ 
+      behavior: "smooth",
+      block: "end"
+    });
   };
 
   return (
@@ -115,127 +116,175 @@ export const Diary = () => {
         </div>
       </div>
 
-      {/* Messages Container */}
+      {/* Messages Container Wrapper */}
       <div style={{
         maxWidth: '1200px',
-        margin: '80px auto 10px',
-        padding: window.innerWidth < 600 ? '10px' : '20px',
-        background: 'rgba(13, 17, 28, 0.85)',
-        borderRadius: '12px',
-        border: '1px solid rgba(64, 153, 255, 0.3)',
-        boxShadow: '0 0 20px rgba(64, 153, 255, 0.2)',
-        height: '90vh',
-        maxHeight: 'calc(100vh - 100px)',
-        overflowY: 'auto',
-        scrollBehavior: 'smooth',
+        margin: '100px auto 80px',
+        position: 'relative', // For button positioning
       }}>
+        {/* Messages Container */}
         <div style={{
-          color: '#4099ff',
-          fontFamily: '"Orbitron", monospace',
-          fontSize: window.innerWidth < 600 ? '16px' : '18px',
-          marginBottom: '15px',
-          padding: '8px',
-          borderBottom: '1px solid rgba(64, 153, 255, 0.2)'
+          padding: window.innerWidth < 600 ? '10px' : '20px',
+          background: 'rgba(13, 17, 28, 0.85)',
+          borderRadius: '12px',
+          border: '1px solid rgba(64, 153, 255, 0.3)',
+          boxShadow: '0 0 20px rgba(64, 153, 255, 0.2)',
+          height: '75vh',
+          maxHeight: 'calc(100vh - 180px)',
+          overflowY: 'auto',
+          scrollBehavior: 'smooth',
         }}>
-          Message History
+          <div style={{
+            color: '#4099ff',
+            fontFamily: '"Orbitron", monospace',
+            fontSize: window.innerWidth < 600 ? '16px' : '18px',
+            marginBottom: '15px',
+            padding: '8px',
+            borderBottom: '1px solid rgba(64, 153, 255, 0.2)'
+          }}>
+            Message History
+          </div>
+
+          {entries.map((entry, index) => (
+            <div key={index} style={{
+              marginBottom: '15px',
+              padding: window.innerWidth < 600 ? '12px' : '15px',
+              background: 'rgba(64, 153, 255, 0.1)',
+              borderRadius: '8px',
+              border: '1px solid rgba(64, 153, 255, 0.2)',
+            }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+                justifyContent: 'space-between',
+                alignItems: window.innerWidth < 600 ? 'flex-start' : 'center',
+                gap: window.innerWidth < 600 ? '8px' : '0',
+                marginBottom: '8px',
+              }}>
+                <div style={{
+                  fontSize: window.innerWidth < 600 ? '11px' : '12px',
+                  color: '#4099ff',
+                  fontFamily: '"Roboto Mono", monospace',
+                }}>
+                  {entry.timestamp}
+                </div>
+                <div style={{
+                  fontSize: window.innerWidth < 600 ? '12px' : '14px',
+                  color: '#4099ff',
+                  fontFamily: '"Orbitron", monospace',
+                  background: 'rgba(64, 153, 255, 0.1)',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(64, 153, 255, 0.2)',
+                }}>
+                  Brain Age: {entry.age}
+                </div>
+              </div>
+              <div style={{
+                fontFamily: '"Roboto Mono", monospace',
+                lineHeight: '1.6',
+                fontSize: window.innerWidth < 600 ? '14px' : '16px',
+                whiteSpace: 'pre-wrap',
+                color: '#fff',
+              }}>
+                {entry.message}
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+
+          {/* Current Message Animation */}
+          {globalState.message && globalState.message !== "Initializing..." && (
+            <div style={{
+              marginBottom: '15px',
+              padding: window.innerWidth < 600 ? '12px' : '15px',
+              background: 'rgba(64, 153, 255, 0.15)',
+              borderRadius: '8px',
+              border: '1px solid rgba(64, 153, 255, 0.3)',
+              animation: 'fadeIn 0.5s ease-in-out',
+              display: entries.some(entry => entry.message === cleanMessage(globalState.message)) ? 'none' : 'block',
+            }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+                justifyContent: 'space-between',
+                alignItems: window.innerWidth < 600 ? 'flex-start' : 'center',
+                gap: window.innerWidth < 600 ? '8px' : '0',
+                marginBottom: '8px',
+              }}>
+                <div style={{
+                  fontSize: window.innerWidth < 600 ? '11px' : '12px',
+                  color: '#4099ff',
+                  fontFamily: '"Roboto Mono", monospace',
+                }}>
+                  Live Update
+                </div>
+                <div style={{
+                  fontSize: window.innerWidth < 600 ? '12px' : '14px',
+                  color: '#4099ff',
+                  fontFamily: '"Orbitron", monospace',
+                  background: 'rgba(64, 153, 255, 0.1)',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(64, 153, 255, 0.2)',
+                }}>
+                  Brain Age: {globalState.age}
+                </div>
+              </div>
+              <div style={{
+                fontFamily: '"Roboto Mono", monospace',
+                lineHeight: '1.6',
+                fontSize: window.innerWidth < 600 ? '14px' : '16px',
+                whiteSpace: 'pre-wrap',
+                color: '#fff',
+              }}>
+                {globalState.message}
+              </div>
+            </div>
+          )}
         </div>
 
-        {entries.map((entry, index) => (
-          <div key={index} style={{
-            marginBottom: '15px',
-            padding: window.innerWidth < 600 ? '12px' : '15px',
-            background: 'rgba(64, 153, 255, 0.1)',
-            borderRadius: '8px',
-            border: '1px solid rgba(64, 153, 255, 0.2)',
-          }}>
-            <div style={{
-              display: 'flex',
-              flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-              justifyContent: 'space-between',
-              alignItems: window.innerWidth < 600 ? 'flex-start' : 'center',
-              gap: window.innerWidth < 600 ? '8px' : '0',
-              marginBottom: '8px',
-            }}>
-              <div style={{
-                fontSize: window.innerWidth < 600 ? '11px' : '12px',
-                color: '#4099ff',
-                fontFamily: '"Roboto Mono", monospace',
-              }}>
-                {entry.timestamp}
-              </div>
-              <div style={{
-                fontSize: window.innerWidth < 600 ? '12px' : '14px',
-                color: '#4099ff',
-                fontFamily: '"Orbitron", monospace',
-                background: 'rgba(64, 153, 255, 0.1)',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                border: '1px solid rgba(64, 153, 255, 0.2)',
-              }}>
-                Brain Age: {entry.age}
-              </div>
-            </div>
-            <div style={{
-              fontFamily: '"Roboto Mono", monospace',
-              lineHeight: '1.6',
-              fontSize: window.innerWidth < 600 ? '14px' : '16px',
-              whiteSpace: 'pre-wrap',
-              color: '#fff',
-            }}>
-              {entry.message}
-            </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-
-        {/* Current Message Animation */}
-        {globalState.message && globalState.message !== "Initializing..." && (
-          <div style={{
-            marginBottom: '15px',
-            padding: window.innerWidth < 600 ? '12px' : '15px',
-            background: 'rgba(64, 153, 255, 0.15)',
-            borderRadius: '8px',
+        {/* Scroll Button - Repositioned */}
+        <button
+          onClick={scrollToBottom}
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            right: '-60px', // Position it to the right of the container
+            background: 'rgba(64, 153, 255, 0.2)',
             border: '1px solid rgba(64, 153, 255, 0.3)',
-            animation: 'fadeIn 0.5s ease-in-out',
-          }}>
-            <div style={{
-              display: 'flex',
-              flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-              justifyContent: 'space-between',
-              alignItems: window.innerWidth < 600 ? 'flex-start' : 'center',
-              gap: window.innerWidth < 600 ? '8px' : '0',
-              marginBottom: '8px',
-            }}>
-              <div style={{
-                fontSize: window.innerWidth < 600 ? '11px' : '12px',
-                color: '#4099ff',
-                fontFamily: '"Roboto Mono", monospace',
-              }}>
-                Live Update
-              </div>
-              <div style={{
-                fontSize: window.innerWidth < 600 ? '12px' : '14px',
-                color: '#4099ff',
-                fontFamily: '"Orbitron", monospace',
-                background: 'rgba(64, 153, 255, 0.1)',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                border: '1px solid rgba(64, 153, 255, 0.2)',
-              }}>
-                Brain Age: {globalState.age}
-              </div>
-            </div>
-            <div style={{
-              fontFamily: '"Roboto Mono", monospace',
-              lineHeight: '1.6',
-              fontSize: window.innerWidth < 600 ? '14px' : '16px',
-              whiteSpace: 'pre-wrap',
-              color: '#fff',
-            }}>
-              {globalState.message}
-            </div>
-          </div>
-        )}
+            borderRadius: '50%',
+            width: '40px',
+            height: '40px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            backdropFilter: 'blur(8px)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(64, 153, 255, 0.3)';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(64, 153, 255, 0.2)';
+            e.currentTarget.style.transform = 'translateY(0)';
+          }}
+        >
+          <svg 
+            width="20" 
+            height="20" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="#4099ff"
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="M12 5v14M19 12l-7 7-7-7"/>
+          </svg>
+        </button>
       </div>
     </div>
   );
