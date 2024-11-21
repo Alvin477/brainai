@@ -40,7 +40,7 @@ function App() {
 
     // Check if market cap increased by 10k
     if (marketCap - prevMarketCap >= 10000) {
-      console.log('Market Cap milestone reached: +$10,000');
+      console.log('Market Cap milestone reached: +$10k');
       prevMarketCapRef.current = marketCap;
       
       // Here you can trigger any effects you want when market cap increases by 10k
