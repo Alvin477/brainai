@@ -1,5 +1,5 @@
 import { useWebSocket } from '../hooks/useWebSocket';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 interface DiaryEntry {
@@ -8,63 +8,44 @@ interface DiaryEntry {
   age: number;
 }
 
+interface GlobalState {
+  diaryEntries: DiaryEntry[];
+  message?: string;
+  age?: number;
+}
+
+const fadeInAnimation = `
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(100px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+`;
+
 export const Diary = () => {
-  const { globalState } = useWebSocket();
+  const { globalState }: { globalState: GlobalState } = useWebSocket();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [entries, setEntries] = useState<DiaryEntry[]>(() => {
-    const savedEntries = localStorage.getItem('diaryEntries');
-    return savedEntries ? JSON.parse(savedEntries) : [];
-  });
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const cleanMessage = (message: string): string => {
     return message
-      // Remove all variations of greetings at the start
       .replace(/^Dear\s+(?:Diary|Journal|Friend|Universe|World|Blockchain),?(?:\s*\n+\s*)?/i, '')
-      
-      // Remove all variations of signatures at the end
       .replace(/\n*(?:Yours|Sincerely|Best|Regards|Excitedly|Thoughtfully|Forever),?(?:\s*\n+\s*)?(?:Little Blocky|Digital Self|In Code|\[.*?\])*\s*$/i, '')
-      
-      // Clean up any remaining whitespace
       .replace(/^\s+|\s+$/g, '')
       .replace(/\n{3,}/g, '\n\n');
   };
 
   useEffect(() => {
-    if (globalState.message && globalState.message !== "Initializing...") {
-      const newEntry = {
-        message: cleanMessage(globalState.message),
-        timestamp: new Date().toLocaleString(),
-        age: globalState.age
-      };
-      
-      setEntries(prevEntries => {
-        const updatedEntries = [...prevEntries, newEntry];
-        localStorage.setItem('diaryEntries', JSON.stringify(updatedEntries));
-        return updatedEntries;
-      });
-    }
-  }, [globalState.message]);
-
-  useEffect(() => {
-    const savedScrollPosition = localStorage.getItem('diaryScrollPosition');
-    if (savedScrollPosition) {
-      window.scrollTo(0, parseInt(savedScrollPosition));
-    }
-
-    const handleScroll = () => {
-      localStorage.setItem('diaryScrollPosition', window.scrollY.toString());
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ 
-      behavior: "smooth",
-      block: "end"
-    });
-  };
+    console.log('Current global state in Diary:', globalState);
+  }, [globalState]);
 
   return (
     <div style={{
@@ -73,6 +54,8 @@ export const Diary = () => {
       padding: '10px',
       color: '#fff',
     }}>
+      <style>{fadeInAnimation}</style>
+
       {/* Header */}
       <div style={{
         position: 'fixed',
@@ -145,14 +128,20 @@ export const Diary = () => {
             Message History
           </div>
 
-          {entries.map((entry, index) => (
-            <div key={index} style={{
-              marginBottom: '15px',
-              padding: window.innerWidth < 600 ? '12px' : '15px',
-              background: 'rgba(64, 153, 255, 0.1)',
-              borderRadius: '8px',
-              border: '1px solid rgba(64, 153, 255, 0.2)',
-            }}>
+          {globalState.diaryEntries.map((entry, index) => (
+            <div 
+              key={index} 
+              style={{
+                marginBottom: '15px',
+                padding: window.innerWidth < 600 ? '12px' : '15px',
+                background: 'rgba(64, 153, 255, 0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(64, 153, 255, 0.2)',
+                animation: 'slideInFromRight 0.5s ease-out',
+                animationFillMode: 'both',
+                animationDelay: `${index * 0.1}s`
+              }}
+            >
               <div style={{
                 display: 'flex',
                 flexDirection: window.innerWidth < 600 ? 'column' : 'row',
@@ -202,7 +191,9 @@ export const Diary = () => {
               borderRadius: '8px',
               border: '1px solid rgba(64, 153, 255, 0.3)',
               animation: 'fadeIn 0.5s ease-in-out',
-              display: entries.some(entry => entry.message === cleanMessage(globalState.message)) ? 'none' : 'block',
+              display: globalState.message && globalState.diaryEntries.some(entry => 
+                entry.message === cleanMessage(globalState.message!)
+              ) ? 'none' : 'block',
             }}>
               <div style={{
                 display: 'flex',

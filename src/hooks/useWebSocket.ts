@@ -5,6 +5,13 @@ interface GlobalState {
   message: string;
   transaction: string | null;
   connectedClients: number;
+  diaryEntries: DiaryEntry[];
+}
+
+interface DiaryEntry {
+  message: string;
+  timestamp: string;
+  age: number;
 }
 
 const WS_URL = import.meta.env.PROD 
@@ -16,7 +23,8 @@ export const useWebSocket = () => {
     age: 1,
     message: "Initializing...",
     transaction: null,
-    connectedClients: 0
+    connectedClients: 0,
+    diaryEntries: []
   });
 
   useEffect(() => {
@@ -27,17 +35,30 @@ export const useWebSocket = () => {
     };
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setGlobalState(data);
+      try {
+        const data = JSON.parse(event.data);
+        console.log('Received WebSocket data:', data);
+        
+        // Handle both INIT and UPDATE messages
+        if (data.type === 'INIT' || data.type === 'UPDATE') {
+          setGlobalState({
+            age: data.age,
+            message: data.message,
+            transaction: data.transaction,
+            connectedClients: data.connectedClients,
+            diaryEntries: data.diaryEntries || []
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
     };
 
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
 
-    return () => {
-      ws.close();
-    };
+    return () => ws.close();
   }, []);
 
   return { globalState };
