@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DiaryEntry } from '../types/diary';
 
 interface GlobalState {
   age: number;
@@ -6,12 +7,6 @@ interface GlobalState {
   transaction: string | null;
   connectedClients: number;
   diaryEntries: DiaryEntry[];
-}
-
-interface DiaryEntry {
-  message: string;
-  timestamp: string;
-  age: number;
 }
 
 const WS_URL = import.meta.env.PROD 
@@ -37,18 +32,8 @@ export const useWebSocket = () => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log('Received WebSocket data:', data);
-        
-        // Handle both INIT and UPDATE messages
-        if (data.type === 'INIT' || data.type === 'UPDATE') {
-          setGlobalState({
-            age: data.age,
-            message: data.message,
-            transaction: data.transaction,
-            connectedClients: data.connectedClients,
-            diaryEntries: data.diaryEntries || []
-          });
-        }
+        console.log('Received WebSocket data:', data); // Debug log
+        setGlobalState(data);
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
       }
@@ -58,8 +43,14 @@ export const useWebSocket = () => {
       console.error('WebSocket error:', error);
     };
 
-    return () => ws.close();
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
-  return { globalState };
+  return { globalState, setGlobalState };
 };
