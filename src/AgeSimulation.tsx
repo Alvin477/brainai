@@ -20,7 +20,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
   }, [globalState.age]);
 
   const handleCopyCA = () => {
-    navigator.clipboard.writeText('00000000');
+    navigator.clipboard.writeText('4srdYpV6kirA6u32nSXVFgfokSmtwMdb49gxqHbUpump');
     setCopySuccess(true);
     setShowBinaryRain(true);
     setTimeout(() => {
@@ -100,7 +100,7 @@ DISCLAIMER: Each electric pulse in my brain represents a transaction made throug
             }}
             title="Click to copy"
           >
-            00000000000000000000000000000000
+            4srdYpV6kirA6u32nSXVFgfokSmtwMdb49gxqHbUpump
             {copySuccess && (
               <span style={{
                 position: 'absolute',
