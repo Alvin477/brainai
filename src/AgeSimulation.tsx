@@ -20,7 +20,7 @@ export const AgeSimulation: React.FC<AgeSimulationProps> = () => {
   }, [globalState.age]);
 
   const handleCopyCA = () => {
-    navigator.clipboard.writeText('4srdYpV6kirA6u32nSXVFgfokSmtwMdb49gxqHbUpump');
+    navigator.clipboard.writeText('000000000000000000000000000000');
     setCopySuccess(true);
     setShowBinaryRain(true);
     setTimeout(() => {
@@ -100,7 +100,7 @@ DISCLAIMER: Each electric pulse in my brain represents a transaction made throug
             }}
             title="Click to copy"
           >
-            4srdYpV6kirA6u32nSXVFgfokSmtwMdb49gxqHbUpump
+            Coming Soon.....
             {copySuccess && (
               <span style={{
                 position: 'absolute',
@@ -123,7 +123,7 @@ DISCLAIMER: Each electric pulse in my brain represents a transaction made throug
           </span>
         </div>
 
-        <div style={{ marginTop: '5px' }}>
+        <div style={{ marginTop: '5px', display: 'flex', gap: '15px', alignItems: 'center' }}>
           <Link to="/diary" style={{
             color: '#4099ff',
             textDecoration: 'none',
@@ -135,6 +135,36 @@ DISCLAIMER: Each electric pulse in my brain represents a transaction made throug
           }}>
             My Diary
           </Link>
+          <a 
+            href="https://x.com/myBRAINx"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: '#4099ff',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '8px',
+              borderRadius: '4px',
+              background: 'rgba(64, 153, 255, 0.1)',
+              transition: 'all 0.3s ease',
+              border: '1px solid rgba(64, 153, 255, 0.3)',
+              boxShadow: '0 0 10px rgba(64, 153, 255, 0.1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(64, 153, 255, 0.2)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(64, 153, 255, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(64, 153, 255, 0.1)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 0 10px rgba(64, 153, 255, 0.1)';
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#4099ff">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
         </div>
       </div>
 
